@@ -49,7 +49,6 @@
 
 
 # File types to ignore
-**/*.jar
 **/cookies.txt
 **/*.iml
 **/*.hprof
