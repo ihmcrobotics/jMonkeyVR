@@ -1,0 +1,136 @@
+import java.util.concurrent.*
+
+buildscript {
+   repositories {
+      maven { url "https://plugins.gradle.org/m2/" }
+      mavenLocal()
+   }
+   dependencies {
+      classpath "gradle.plugin.us.ihmc:ihmc-build:0.9.5"
+   }
+}
+apply plugin: "us.ihmc.ihmc-build"
+
+ihmc {
+   group = "us.ihmc"
+   version = "0.10.0"
+   vcsUrl = "https://stash.ihmc.us/projects/TP/repos/jmevr"
+   openSource = false
+
+   configureDependencyResolution()
+   configurePublications()
+}
+
+allprojects {
+   repositories {
+      flatDir { dirs 'libs' }
+   }
+}
+
+testSuites {
+   bambooPlanKeys = ["LIBS-JMEVR"]
+}
+
+mainDependencies {
+   compile group: 'org.jmonkeyengine', name: 'jme3-core', version: '3.2.0-ihmc-vr-Vendor'
+   compile group: 'org.jmonkeyengine', name: 'jme3-desktop', version: '3.2.0-ihmc-vr-Vendor'
+   compile group: 'org.jmonkeyengine', name: 'jme3-lwjgl', version: '3.2.0-ihmc-vr-Vendor'
+   compile group: 'org.jmonkeyengine', name: 'jme3-lwjgl3', version: '3.2.0-ihmc-vr-Vendor'
+   compile group: 'org.jmonkeyengine', name: 'jme3-effects', version: '3.2.0-ihmc-vr-Vendor'
+   // Can't use until whole codebase is switched
+   //compile group: 'org.lwjgl', name: 'lwjgl', version: '3.0.0'
+   compile name: "lwjgl-3.0.0"
+   compile group: 'com.nativelibs4java', name: 'jnaerator', version: '0.12'
+   //compile group: 'graphics.scenery', name: 'jopenvr', version: '1.0.5.3'
+
+   compile group: 'org.jmonkeyengine', name: 'jme3-terrain', version: '3.2.0-ihmc-vr-Vendor'
+   compile group: 'org.jmonkeyengine', name: 'jme3-plugins', version: '3.2.0-ihmc-vr-Vendor'
+   compile group: 'org.eclipse.swt', name: getSWTJarNameFromLocalOS(), version: '4.4'
+
+   compile group: 'us.ihmc.thirdparty.jme', name: 'jme3-dae', version: '1.0.0-internal1'
+   compile group: 'us.ihmc.thirdparty.jme', name: 'jme3-ogre', version: '1.0.0-internal2'
+}
+
+def private String getFrameworkJarName() {
+   println "OS Identifier: ${osIdentifier}"
+   switch (osIdentifier) {
+      case "system":
+         return getFrameworkJarNameFromLocalOS();
+      default:
+         return "HephaestusFramework-${osIdentifier}";
+   }
+}
+
+def private String getFrameworkJarNameFromLocalOS() {
+
+   if (isOSX()) {
+      return "HephaestusFramework-mac";
+   }
+
+   if (isWindows()) {
+      return "HephaestusFramework-windows";
+   }
+
+   if (isLinux()) {
+      return "HephaestusFramework-linux";
+   }
+
+   throw new RuntimeException("Bad OS configuration for SWT");
+}
+
+def private String getSWTJarNameFromLocalOS() {
+   String prefix = "org.eclipse.swt";
+
+   if (isOSX()) {
+      return prefix + ".cocoa.macosx.x86_64";
+   }
+
+   if (isWindows()) {
+      return prefix + ".win32.win32.x86_64";
+   }
+
+   if (isLinux()) {
+      return prefix + ".gtk.linux.x86_64";
+   }
+
+   throw new RuntimeException("Bad OS configuration for SWT");
+}
+
+/**
+ * See: https://code.google.com/p/swt-repo/
+ * @return
+ */
+def private String getSWTJarName() {
+   println "OS Identifier: ${osIdentifier}"
+   switch (osIdentifier) {
+      case "system":
+         return getSWTJarNameFromLocalOS();
+      case "mac":
+         return "org.eclipse.swt.cocoa.macosx.x86_64";
+      case "windows":
+         return "org.eclipse.swt.win32.win32.x86_64";
+      case "linux":
+         return "org.eclipse.swt.gtk.linux.x86_64";
+   }
+}
+
+def private boolean isOSX() {
+   String osLowerCase = System.getProperty("os.name").toLowerCase();
+   return osLowerCase.contains("mac");
+}
+
+def private boolean isLinux() {
+   String osLowerCase = System.getProperty("os.name").toLowerCase();
+   return osLowerCase.contains("nix") || osLowerCase.contains("nux") || osLowerCase.contains("aix");
+}
+
+def private boolean isWindows() {
+   String osLowerCase = System.getProperty("os.name").toLowerCase();
+   return osLowerCase.contains("win");
+}
+
+def private boolean is64bit() {
+   String arch = System.getProperty("os.arch");
+
+   return arch.contains("64");
+}

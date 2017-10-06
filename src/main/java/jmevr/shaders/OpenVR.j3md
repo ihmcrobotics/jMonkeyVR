@@ -1,0 +1,33 @@
+MaterialDef OpenVR {
+    MaterialParameters {
+        Int NumSamples
+        Texture2D Texture
+    
+        Vector2 inUVred
+        Vector2 inUVblue
+        Vector2 inUVgreen
+    }
+ 
+     Technique {
+        VertexShader GLSL150:   jmevr/shaders/OpenVR15.vert
+        FragmentShader GLSL150: jmevr/shaders/OpenVR15.frag
+ 
+        WorldParameters {
+        }
+ 
+        Defines {
+        }
+ 
+    }
+ 
+    Technique {
+        VertexShader GLSL100:   jmevr/shaders/OpenVR.vert
+        FragmentShader GLSL100: jmevr/shaders/OpenVR.frag
+ 
+        WorldParameters {
+        }
+ 
+        Defines {
+        } 
+    }
+}
