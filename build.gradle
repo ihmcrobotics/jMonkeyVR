@@ -14,8 +14,8 @@ apply plugin: "us.ihmc.ihmc-build"
 ihmc {
    group = "us.ihmc"
    version = "0.10.0"
-   vcsUrl = "https://stash.ihmc.us/projects/TP/repos/jmevr"
-   openSource = false
+   vcsUrl = "https://stash.ihmc.us/projects/TP/repos/jmonkeyvr"
+   openSource = true
 
    configureDependencyResolution()
    configurePublications()

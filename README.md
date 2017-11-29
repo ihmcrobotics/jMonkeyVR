@@ -1,0 +1,1 @@
+This was originally a fork of https://github.com/phr00t/jMonkeyVR, but somehow the history got erased. Hopefully we can get this fixed soon.
